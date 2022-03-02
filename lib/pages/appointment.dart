@@ -1,8 +1,8 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import 'home.dart';
 
@@ -16,19 +16,8 @@ class _AppointmentsState extends State<Appointments> {
   final _formKey = GlobalKey<FormState>();
 
   // cloud firestore instance
-  final _firestore = FirebaseFirestore.instance;
-  final _auth=FirebaseAuth.instance;
-  String loggedUser;
-  void getUserID() async {
-    try {
-      final users = await _auth.currentUser;
-      if (users != null) {
-        loggedUser = users.uid;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  final firestore = FirebaseFirestore.instance;
+
   // variables to hold data to be collected from the form
   String userName, email, phoneNumber;
   String appDateTime, idNumber, appReason;
@@ -37,15 +26,9 @@ class _AppointmentsState extends State<Appointments> {
   Widget build(BuildContext context) {
     String dropDownValue = 'Out-Patient Department';
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.blueGrey.shade100,
       appBar: AppBar(
-        backgroundColor: Color(0xFFFF9800),
-        title: Text('Book Appointment',
-          style: TextStyle(
-            fontWeight:FontWeight.w300,
-            fontSize: 20.0,
-            color: Colors.black,
-          ),),
+        title: Text('Book Appointment'),
       ),
       // building a form using the form key stated above
       body: SingleChildScrollView(
@@ -91,7 +74,7 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter email!';
                     }
                   },
-                  onChanged: (input) => email = input,
+                  onSaved: (input) => email = input,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -121,7 +104,7 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter a valid Phone Number!';
                     }
                   },
-                  onChanged: (input) => phoneNumber = input,
+                  onSaved: (input) => phoneNumber = input,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -155,7 +138,7 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter a valid ID Number!';
                     }
                   },
-                  onChanged: (input) => idNumber = input,
+                  onSaved: (input) => idNumber = input,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -217,7 +200,7 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter Reason for Booking Appointment!';
                     }
                   },
-                  onChanged: (input) => appReason = input,
+                  onSaved: (input) => appReason = input,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -234,7 +217,7 @@ class _AppointmentsState extends State<Appointments> {
                     prefixIcon: Icon(Icons.chat),
                     labelText: 'Reason for Appointment',
                     hintText:
-                        'Treatment, Consultation, X-Ray, HIV Testing, etc.',
+                    'Treatment, Consultation, X-Ray, HIV Testing, etc.',
                   ),
                 ),
                 SizedBox(
@@ -260,7 +243,7 @@ class _AppointmentsState extends State<Appointments> {
                           // pop up to show successful addition of data
                           Alert(
                             context: context,
-                            title: "CAPSULE",
+                            title: "HABS",
                             desc: "Do you want to submit?",
                             type: AlertType.warning,
                             buttons: [
@@ -320,16 +303,15 @@ class _AppointmentsState extends State<Appointments> {
 
     try {
       // create a reference to a collection
-      // CollectionReference collectionReference =
-      //     FirebaseFirestore.instance.collection('users');
-      // collectionReference.add(appFormData);
-      final details =_firestore.collection("users").
+      CollectionReference collectionReference =
+      FirebaseFirestore.instance.collection('users');
+      collectionReference.add(appFormData);
 
       // show success
       Alert(
         context: context,
         type: AlertType.success,
-        title: "CAPSULE",
+        title: "HABS",
         desc: "Data Added Successfully!",
         buttons: [
           DialogButton(
