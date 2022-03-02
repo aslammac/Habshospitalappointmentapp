@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "490319649018",
+    "project_id": "capsule-e3836",
+    "storage_bucket": "capsule-e3836.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490319649018:android:17ed62b68f417ce7a51143",
+        "android_client_info": {
+          "package_name": "com.sande.habs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "490319649018-u347bm9akcuh7l9iu4qlbahk1ufmd744.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQ-8lYZ37kT8JPA2YZGD_GPElFFc4zkp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "490319649018-u347bm9akcuh7l9iu4qlbahk1ufmd744.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
