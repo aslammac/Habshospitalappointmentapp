@@ -7,6 +7,7 @@ import 'package:habs/Authentication/authentication_service.dart';
 import 'package:habs/pages/home.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -16,9 +17,10 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // don't show modal in initial loading
   bool _showProgress = false;
-
+  final _auth=FirebaseAuth.instance;
   // values to hold email and password
-  String _email, _password;
+  String email, password;
+
 
   // key to be used for the form
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -57,7 +59,12 @@ class _LoginPageState extends State<LoginPage> {
                       return 'Please enter email!';
                     }
                   },
-                  onSaved: (input) => _email = input,
+                  onChanged: (val){
+                    setState(() {
+
+                      email=val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -90,7 +97,10 @@ class _LoginPageState extends State<LoginPage> {
                       return 'Your password should be at least 6 characters!';
                     }
                   },
-                  onSaved: (input) => _password = input,
+                  onChanged: (val)
+                  {
+                    password=val;
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
@@ -120,19 +130,24 @@ class _LoginPageState extends State<LoginPage> {
                   style: ElevatedButton.styleFrom(
                     primary: Colors.white, // background
                     onPrimary: Colors.white,), // foreground
-                  onPressed: () {
+                  onPressed: () async{
                     // call the authentication service using provider
-                    context.read<AuthenticationService>().signIn(
-                          email: _email,
-                          password: _password,
+                    try{
+
+                      final newUser = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                      if(newUser!=null){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Home(),   
+                          ),
                         );
+                      }
+                    }catch(e){
+                      print(e);
+                    }
                     // Navigate to home page
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Home(),
-                      ),
-                    );
+
                   },
                   child: Text(
                     'Log In',

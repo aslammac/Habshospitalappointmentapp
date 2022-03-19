@@ -1,9 +1,9 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:habs/DoctorList.dart';
 import 'home.dart';
 
 class Appointments extends StatefulWidget {
@@ -17,18 +17,43 @@ class _AppointmentsState extends State<Appointments> {
 
   // cloud firestore instance
   final firestore = FirebaseFirestore.instance;
-
+  final _auth = FirebaseAuth.instance;
   // variables to hold data to be collected from the form
   String userName, email, phoneNumber;
-  String appDateTime, idNumber, appReason;
+  String appDateTime, idNumber, appReason,doctorName;
+  String loggedUser;
+  void getUserID() async {
+    try {
+      final users = await _auth.currentUser;
+      if (users != null) {
+        loggedUser = users.uid;
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserID();
+  }
 
   @override
   Widget build(BuildContext context) {
     String dropDownValue = 'Out-Patient Department';
     return Scaffold(
-      backgroundColor: Colors.blueGrey.shade100,
       appBar: AppBar(
-        title: Text('Book Appointment'),
+        backgroundColor: Color(0xFFFF9800),
+        title: Text('APPOINTMENT',
+          style: TextStyle(
+            fontWeight:FontWeight.w300,
+            fontSize: 20.0,
+            color: Colors.black,
+
+          ),
+        ),
       ),
       // building a form using the form key stated above
       body: SingleChildScrollView(
@@ -46,17 +71,21 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter Last Name!';
                     }
                   },
-                  onSaved: (input) => userName = input,
+                  onChanged: (val) {
+                    setState(() {
+                      userName = val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.white,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
@@ -74,17 +103,21 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter email!';
                     }
                   },
-                  onSaved: (input) => email = input,
+                  onChanged: (val) {
+                    setState(() {
+                      email = val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.white,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
@@ -104,11 +137,15 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter a valid Phone Number!';
                     }
                   },
-                  onSaved: (input) => phoneNumber = input,
+                  onChanged: (val) {
+                    setState(() {
+                      phoneNumber = val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30.0),
@@ -116,7 +153,7 @@ class _AppointmentsState extends State<Appointments> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30.0),
@@ -138,11 +175,15 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter a valid ID Number!';
                     }
                   },
-                  onSaved: (input) => idNumber = input,
+                  onChanged: (val) {
+                    setState(() {
+                      idNumber = val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(
                         Radius.circular(30.0),
@@ -163,6 +204,51 @@ class _AppointmentsState extends State<Appointments> {
                 SizedBox(
                   height: 10,
                 ),
+
+               DropdownButtonFormField(
+                   isExpanded: true,
+
+                   icon: const Icon(Icons.arrow_downward),
+                   iconSize: 24,
+                   elevation: 16,
+                   decoration:InputDecoration(
+                     enabledBorder: OutlineInputBorder(
+                       borderSide: BorderSide(
+                         color: Colors.black,
+                       ),
+                       borderRadius: BorderRadius.all(
+                         Radius.circular(30.0),
+                       ),
+                     ),
+                     focusedBorder: OutlineInputBorder(
+                       borderSide: BorderSide(
+                         color: Colors.black,
+                       ),
+                       borderRadius: BorderRadius.all(
+                         Radius.circular(30.0),
+                       ),
+                     ),
+                     prefixIcon: Icon(Icons.credit_card),
+                     labelText: 'Select doctor',
+                   ) ,
+
+                   items: doctors.map<DropdownMenuItem<String>>((String value){
+                     return DropdownMenuItem<String>(value: value,child:Text(value) );
+                   }).toList(),
+                 onChanged: (value){
+                     setState(() {
+                       doctorName =value;
+                     });
+
+                 },
+
+               ),
+                SizedBox(
+                  height: 10,
+                ),
+
+
+
                 DateTimePicker(
                   type: DateTimePickerType.dateTime,
                   dateMask: 'd MMM, yyyy',
@@ -170,17 +256,21 @@ class _AppointmentsState extends State<Appointments> {
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2100),
                   icon: Icon(Icons.event),
-                  onChanged: (value) => appDateTime = value,
+                  onChanged: (val) {
+                    setState(() {
+                      appDateTime = val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.white,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
@@ -200,24 +290,28 @@ class _AppointmentsState extends State<Appointments> {
                       return 'Please enter Reason for Booking Appointment!';
                     }
                   },
-                  onSaved: (input) => appReason = input,
+                  onChanged: (val) {
+                    setState(() {
+                      appReason = val;
+                    });
+                  },
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      borderRadius: BorderRadius.all(Radius.circular(40.0)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
-                        color: Colors.blueGrey.shade200,
+                        color: Colors.black,
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
                     prefixIcon: Icon(Icons.chat),
                     labelText: 'Reason for Appointment',
                     hintText:
-                    'Treatment, Consultation, X-Ray, HIV Testing, etc.',
+                        'Treatment, Consultation, X-Ray, HIV Testing, etc.',
                   ),
                 ),
                 SizedBox(
@@ -241,30 +335,92 @@ class _AppointmentsState extends State<Appointments> {
                         // validate the details to be submitted and proceed to send them to Cloud
                         if (formState.validate()) {
                           // pop up to show successful addition of data
+                          try {
+                            firestore
+                                .collection("users")
+                                .doc(loggedUser)
+                                .set({
+                              "name": userName,
+                              "email": email,
+                              "phone number": phoneNumber,
+                              "id number": idNumber,
+                              "application date": appDateTime,
+                              "application reason": appReason,
+                              "Doctor Name": doctorName,
+                            });
+                            // show success
+
+
+                          } catch (e) {
+                            print(e.message);
+                          }
                           Alert(
                             context: context,
-                            title: "HABS",
-                            desc: "Do you want to submit?",
-                            type: AlertType.warning,
+                            title: "Capsule",
+                            desc: "Data Added Successfully!",
+                            type: AlertType.success,
                             buttons: [
-                              DialogButton(
-                                child: Text(
-                                  "Cancel",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 20),
-                                ),
-                                onPressed: () => Navigator.pop(context),
-                                color: Colors.red.shade800,
-                              ),
+                              // DialogButton(
+                              //   child: Text(
+                              //     "Cancel",
+                              //     style: TextStyle(
+                              //         color: Colors.white, fontSize: 20),
+                              //   ),
+                              //   onPressed: () => Navigator.pop(context),
+                              //   color: Colors.red.shade800,
+                              // ),
                               DialogButton(
                                 child: Text(
                                   "OK",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 ),
-                                onPressed: () => {
-                                  Navigator.pop(context),
-                                  addData(),
+                                onPressed: () {
+                                  // try {
+                                  // firestore
+                                  //       .collection("users")
+                                  //       .doc(loggedUser)
+                                  //       .set({
+                                  //     "name": userName,
+                                  //     "email": email,
+                                  //     "phone number": phoneNumber,
+                                  //     "id number": idNumber,
+                                  //     "application date": appDateTime,
+                                  //     "application reason": appReason,
+                                  //   });
+                                    // show success
+                                 // if(det!=null){
+                                 //   Alert(
+                                 //     context: context,
+                                 //     type: AlertType.success,
+                                 //     title: "capsule",
+                                 //     desc: "Data Added Successfully!",
+                                 //     buttons: [
+                                 //       DialogButton(
+                                 //         child: Text(
+                                 //           "OK",
+                                 //           style: TextStyle(
+                                 //               color: Colors.white,
+                                 //               fontSize: 20),
+                                 //         ),
+                                 //         onPressed: () =>
+                                 //             Navigator.pushReplacement(
+                                 //               context,
+                                 //               MaterialPageRoute(
+                                 //                 builder: (context) => Home(),
+                                 //               ),
+                                 //             ),
+                                 //         width: 120,
+                                 //       )
+                                 //     ],
+                                 //   ).show();
+                                 // }
+                                 //  Navigator.pop(context);
+                                 //  } catch (e) {
+                                 //    print(e.message);
+                                 //  }
+
+                                  Navigator.pop(context);
                                 },
                                 color: Colors.green.shade800,
                               )
@@ -290,47 +446,41 @@ class _AppointmentsState extends State<Appointments> {
   }
 
   // method to add data to the database
-  addData() {
-    // map to store the received data
-    Map<String, dynamic> appFormData = {
-      "name": userName,
-      "email": email,
-      "phone number": phoneNumber,
-      "ID number": idNumber,
-      "application date": appDateTime,
-      "application reason": appReason,
-    };
-
-    try {
-      // create a reference to a collection
-      CollectionReference collectionReference =
-      FirebaseFirestore.instance.collection('users');
-      collectionReference.add(appFormData);
-
-      // show success
-      Alert(
-        context: context,
-        type: AlertType.success,
-        title: "HABS",
-        desc: "Data Added Successfully!",
-        buttons: [
-          DialogButton(
-            child: Text(
-              "OK",
-              style: TextStyle(color: Colors.white, fontSize: 20),
-            ),
-            onPressed: () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Home(),
-              ),
-            ),
-            width: 120,
-          )
-        ],
-      ).show();
-    } catch (e) {
-      print(e.message);
-    }
-  }
+  // addData() {
+  //   // map to store the received data
+  //   try {
+  //     firestore.collection("users").doc(loggedUser).set({
+  //       "name": userName,
+  //       "email": email,
+  //       "phone number": phoneNumber,
+  //       "id number": idNumber,
+  //       "application date": appDateTime,
+  //       "application reason": appReason,
+  //     });
+  //     // show success
+  //     Alert(
+  //       context: context,
+  //       type: AlertType.success,
+  //       title: "capsule",
+  //       desc: "Data Added Successfully!",
+  //       buttons: [
+  //         DialogButton(
+  //           child: Text(
+  //             "OK",
+  //             style: TextStyle(color: Colors.white, fontSize: 20),
+  //           ),
+  //           onPressed: () => Navigator.pushReplacement(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (context) => Home(),
+  //             ),
+  //           ),
+  //           width: 120,
+  //         )
+  //       ],
+  //     ).show();
+  //   } catch (e) {
+  //     print(e.message);
+  //   }
+  // }
 }

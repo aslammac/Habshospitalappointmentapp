@@ -24,9 +24,16 @@ class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey.shade100,
       appBar: AppBar(
-        title: Text('About Us'),
+        backgroundColor: Color(0xFFFF9800),
+        title: Text('about us ',
+          style: TextStyle(
+            fontWeight:FontWeight.w300,
+            fontSize: 20.0,
+            color: Colors.black,
+
+          ),
+        ),
       ),
       body: SafeArea(
         child: Padding(
@@ -84,7 +91,7 @@ class _AboutState extends State<About> {
                         ),
                         Text(
                           //'sandesydney02@gmail.com',
-                          'MOHAMEDABDULLAH6306458@GMIL.COM',
+                          'hello',
                           style: TextStyle(
                             fontSize: 17,
                             fontStyle: FontStyle.italic,
@@ -101,7 +108,7 @@ class _AboutState extends State<About> {
                             'Contact Developer',
                             style: TextStyle(
                               fontSize: 18.0,
-                              color: Colors.blue.shade900,
+                              color: Colors.black,
                               letterSpacing: 1.25,
                             ),
                           ),

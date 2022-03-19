@@ -24,28 +24,28 @@ class _HomeListViewState extends State<HomeListView> {
       onTap: () {
         // determine the image that has been clicked and open the necessary class handle it
         switch (image) {
-          case 'logo1':
+          case 'about21':
             Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => About(),
                 ));
             break;
-          case 'doctor12':
+          case 'doctor3':
             Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => Doctors(),
                 ));
             break;
-          case 'appoinment1':
+          case 'appointment2':
             Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => Appointments(),
                 ));
             break;
-          case 'servies1':
+          case 'servies12':
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -63,13 +63,13 @@ class _HomeListViewState extends State<HomeListView> {
     return ListView(
       children: <Widget>[
         SizedBox(height: 5),
-        buildItem(image: 'logo1'),
+        buildItem(image: 'about21'),
         SizedBox(height: 5),
-        buildItem(image: 'doctor12'),
+        buildItem(image: 'doctor3'),
         SizedBox(height: 5),
-        buildItem(image: 'appoinment1'),
+        buildItem(image: 'appointment2'),
         SizedBox(height: 5),
-        buildItem(image: 'servies1')
+        buildItem(image: 'servies12')
       ],
     );
   }
