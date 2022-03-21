@@ -37,11 +37,18 @@ class Doctors extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data.docs.length,
               itemBuilder: (context, index) {
-                return DoctorsList(
+                if(snapshot.data.docs[index].data()['avail']== true){
+                  return DoctorsList(
                   doctorName: snapshot.data.docs[index].data()['name'],
                   doctorRole: snapshot.data.docs[index].data()['role'],
                   doctorContact: snapshot.data.docs[index].data()['phone'].toString(),
                 );
+                
+                }
+                else {
+                  return Container();
+                }
+                
               },
             );
           }
